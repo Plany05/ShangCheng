@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>会员注册</title>
+<link rel="stylesheet" href="css/login.css" />
+</head>
+
+<body>
+
+	<div id="app">
+		<div class="regist">
+			<div class="regist_center">
+				<div class="regist_top">
+					<div class="left fl">会员注册</div>
+					<div class="right fr">
+						<a href="index.html">小米商城</a>
+					</div>
+					<div class="clear"></div>
+					<div class="xian center"></div>
+				</div>
+
+				<div class="regist_main">
+
+					<div class="username">
+						用&nbsp;&nbsp;户&nbsp;&nbsp;名：<input type="text" class="shurukuang"
+							placeholder="请输入您的用户名" id="name" v-model="info.nikename"
+							onblur="user()"><span>用户名2-10个字，只能是中文或英文</span>
+					</div>
+
+					<div class="username">
+						邮&nbsp;&nbsp;箱&nbsp;&nbsp;号：<input type="text" class="shurukuang"
+							placeholder="请输入您的邮箱号" v-model="info.email" id="email"
+							onblur="emial()"><span>用户名2-10个字，只能是中文或英文</span>
+					</div>
+					<div class="username">
+						密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：<input
+							type="password" id="pwd1" v-model="info.password"
+							class="shurukuang" placeholder="请输入您的密码" onblur="password()">
+						<span>密码由数字和字母组成,不能少于6位</span>
+					</div>
+					<div class="username">
+						确认密码：<input type="password" class="shurukuang" id="pwd2"
+							placeholder="请确认密码" onblur="pwd2()"><span>请确认您的密码</span>
+					</div>
+					<div class="username">
+						手&nbsp;&nbsp;机&nbsp;&nbsp;号：<input type="text" class="shurukuang"
+							id="phone" v-model="info.telephone" placeholder="请输入您的手机号"
+							onblur="phone()" /><span>请输入您的手机号</span>
+					</div>
+					<div class="username">
+						<div class="left fl">
+							验&nbsp;&nbsp;证&nbsp;&nbsp;码：<input type="text" id="code"
+								v-model="info.code" class="yanzhengma" placeholder="请输入您的验证码"
+								style="width: 140px;" onblur="yanzhenma()">
+						</div>
+						<span>请输入您的验证码</span>
+						<div class="right fl">
+							<input type="button" @click="sendCode" value="获取验证码"
+								class="submit"
+								style="width: 150px; border-radius: 8px; margin-left: 0px;"
+								click="phone()" />
+						</div>
+
+					</div>
+					<div class="login_submit">
+						<input type="button" @click="reg" value="立即注册" class="submit"
+							style="border-radius: 10px;" />
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript">
+		function user() {
+			//用户名
+			var name = document.getElementById("name");
+			if (name.value == '') {
+				alert('姓名不能为空');
+				return false;
+			} else {
+				var vname = (/^[a-zA-Z\u4e00-\u9fa5]{2,10}$/);
+				if (!vname.test(name.value)) {
+					alert('姓名2-10个字，只能是中文或英文');
+					return false;
+				}
+			}
+			return true;
+		};
+		function emial() {
+			//邮箱
+			var email = document.getElementById('email');
+			if (email.value == '') {
+				alert('邮箱不能为空');
+				email.focus();
+				return false;
+			} else {
+				var vemail = /^[0-9a-zA-Z]+(?:[\_\.\-][a-z0-9\-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\.[a-zA-Z]+$/i;
+				if (!vemail.test(email.value)) {
+					alert('邮箱格式错误');
+					email.focus();
+					return false;
+				}
+			}
+			return true;
+		};
+		function password() {
+			//密码
+			var pwd1 = document.getElementById('pwd1');
+			if (pwd1.value == '') {
+				alert('密码不能为空');
+				return false;
+			} else {
+				var vpwd = /^[A-Za-z0-9]+$/;
+				if (!vpwd.test(pwd1.value)) {
+					alert('密码错误，密码由数字和字母组成');
+					return false;
+				} else {
+					if (pwd1.value.length < 6) {
+						alert('密码不能少于6位');
+						return false;
+					}
+				}
+			}
+			return true;
+		};
+		function pwd2() {
+			//验证密码
+			var pwd1 = document.getElementById('pwd1');
+			var pwd2 = document.getElementById('pwd2');
+			if (!(pwd2.value == pwd1.value)) {
+				alert('确认密码与第一次输入相同，请重新输入');
+				return false;
+			}
+			return true;
+		};
+		function phone() {
+			//电话号
+			var phone = document.getElementById('phone');
+			if (phone.value == '') {
+				alert('电话不能为空');
+				return false;
+			} else {
+				var phone_reg = /^13[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}|17[0-9]{1}[0-9]{8}$|16[0-9]{1}[0-9]{8}/;
+				var tel_reg = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+				if (!phone_reg.test(phone.value) && !tel_reg.test(phone.value)) {
+					alert('手机或电话号码格式不正确。如果是固定电话，必须形如(xxxx-xxxxxxxx)');
+					return false;
+				}
+			}
+			return true;
+		};
+		function yanzhenma() {
+			//验证码
+			var code = document.getElementById('code');
+			if (code.value == '') {
+				alert('验证码不能为空');
+				return false;
+			}
+			return true;
+		}
+		//表单验证
+		function check() {
+			return user() && emial() && password() && pwd2() && phone()
+					&& yanzhenma();
+		};
+	</script>
+
+	<script type="text/javascript">
+		var app = new Vue(
+				{
+					el : "#app",
+					data : {
+						info : {}
+					},
+					methods : {
+						reg : function() {
+							if (check()) {
+								/* 手机号唯一性判断 */
+								$.post("/xiaomishop/user?m=reg", app.info,
+							function(back) {
+								//code 20006 手机号已存在   20007 注册成功
+								// 20008 注册失败
+								if (back.code == 20006) {
+									alert("手机号已注册，请直接登录");
+								} else if (back.code == 20007) {
+									if (confirm("注册成功，去登录")) {
+										window.location.href = "login.html";
+									}
+								} else if (back.code == 20005) {
+									alert("验证码错误");
+								}
+							});
+							}
+						},
+						sendCode : function() {
+							if (phone()) {
+								/* 判断验证码是否发送成功 */
+								$.post("/xiaomishop/user?m=sendCode", app.info,
+										function(back) {
+											alert("发送成功");
+										});
+							}
+						}
+					}
+				});
+	</script>
+</body>
+</html>

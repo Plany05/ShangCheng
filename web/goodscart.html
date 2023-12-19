@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8" />
+<link rel="icon" href="img/icon.png" type="image/x-icon">
+<link rel="stylesheet" href="css/goodscart.css" />
+<script type="text/javascript" src="js/product.js"></script>
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" type="text/css" href="bs/css/bootstrap.min.css" />
+<title>购物车 贵美·商城</title>
+</head>
+<body>
+	<!-- 头部导航 -->
+	<embed style="width: 100%;" type="text/html" src="header.html" />
+	<div id="app" style="margin-top: -100px;">
+		<!-- 購物車 -->
+		<div v-if="code == 20011"
+			style="margin-left: -50px; text-align: center">
+			<div>
+				<img src="img/xiaomi.jpg" style="width: 500px; height: 463px"><br />
+				<h2>
+					对不起 您还没有登录 请先<a href="login.html" style="font-family: 楷体">登录</a>
+				</h2>
+			</div>
+		</div>
+		<div v-else>
+			<div v-if="carList.length == 0 "
+				style="margin-left: -50px; text-align: center">
+				<div>
+					<img src="img/gouwuche.jpg" style="width: 500px; height: 500px"><br />
+					<h2>
+						对不起 您的购物车为空 请去<a href="index.html" style="font-family: 楷体">添加</a>
+					</h2>
+				</div>
+			</div>
+			<div v-else>
+				<div class="banner_x center">
+					<a href="index.html" target="_blank">
+						<div class="logo fl"></div>
+					</a>
+					<div class="wdgwc fl ml40">我的购物车</div>
+					<div class="wxts fl ml40">温馨提示：产品是否购买成功，以最终下单为为准哦，请尽快结算</div>
+				</div>
+				<div class="xiantiao"></div>
+
+				<div class="wrap" id="app">
+
+					<div class="title">
+						<ul>
+							<li>商品</li>
+							<li>商品信息</li>
+							<li>单价（元）</li>
+							<li>数量</li>
+							<li>小计（元）</li>
+							<li>操作</li>
+						</ul>
+					</div>
+					<div>
+						<div class="goods" v-for="p in carList">
+							<ul>
+								<li><img :src="p.pimage" />{{p.pname}}</li>
+								<li>尺碼:均碼</li>
+								<li class="price">{{p.price}}</li>
+								<li>
+									<div class="count">
+										<span @click="reduce(p.pid)">－</span> <input disabled="disabled"
+											@blur="change(p.pid)" type="text" :value="p.num" name="num"
+											:class="'num'+p.pid" size="5" /> <span @click="plus(p.pid)">＋</span>
+									</div>
+								</li>
+								<li class="subtotal">{{p.subtotal}}</li>
+								<li><button @click="deleteOne(p.oid)"
+										class="btn btn-danger">刪除</button></li>
+							</ul>
+						</div>
+					</div>
+					<div class="foot">
+						<ul>
+							<li><button @click="deleteAll(user.uid)"
+									class="btn btn-danger">全部刪除</button></li>
+							<li>总价：￥<span
+								style="color: red; font-size: 30px; font-weight: 600;">{{aggregate}}</span></li>
+							<li><a href="carOrder.html">去付款</a></li>
+						</ul>
+					</div>
+				</div>
+				<footer class="center">
+					<div class="mt20">小米商城|MIYU|米聊|多看书城|小米路由器|视频电话|小米天猫店|小米淘宝直营店|小米网通|小米移动|隐私政策|Select
+						Region</div>
+					<div>@mi.com 京ICP证110507号 京ICP备1004644号 京公安网备11010802020134号
+						京网文[2014]0059-0009号</div>
+					<div>违法和不良信息举报电话：185-0130-1238，本网站所列数据，除特殊说明，所有数据均出自我司实验室测试</div>
+				</footer>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript">
+		//发送请求  请求购物车信息
+		$.get("foo/cart?m=getUserCart", function(back) {
+			app.code = back.code;
+			app.carList = back.data.trade;
+			app.aggregate = back.data.aggregate;
+		});
+		/* 获取用户信息 */
+		$.post("user?m=getUser", function(back) {
+			app.user = back.data;
+		})
+		var app = new Vue({
+			el : "#app",
+			data : {
+				carList : null,
+				code : 0,
+				user : {},
+				aggregate : 0
+			},
+			methods : {
+				/* 购物车数量减 */
+				reduce : function(pid) {
+					$.post("foo/cart?m=reduceNum&pid=" + pid, function(back) {
+						app.carList = back.data.trade;
+						app.aggregate = back.data.aggregate;
+					});
+				},
+				/* 购物车数量加 */
+				plus : function(pid) {
+					$.post("foo/cart?m=plusNum&pid=" + pid, app.user, function(
+							back) {
+						app.carList = back.data.trade;
+						app.aggregate = back.data.aggregate;
+					});
+				},
+				/* 根据oid删除单个商品 */
+				deleteOne : function(oid) {
+					$.post("foo/cart?m=deleteOne&id=" + oid, function(back) {
+						if (back.code == 20010) {
+							app.code = back.code;
+							app.carList = back.data.trade;
+							app.aggregate = back.data.aggregate;
+						} else {
+							alert("删除失败");
+						}
+					});
+				},
+				/* 删除用户所有的购物车信息 */
+				deleteAll : function(f) {
+					$.post("foo/cart?m=deleteAll&uid=" + f, function(back) {
+						if (back.code == 20014) {
+							app.code = back.code;
+							app.carList = back.data.trade;
+							app.aggregate = back.data.aggregate;
+						}
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

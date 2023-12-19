@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/com/aaa/dao/IProductDAO.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/dao/impl/CartDaoImpl.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/dao/impl/CollectDaoImpl.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/dao/impl/OrderDAOImpl.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/dao/impl/ProductDAOImpl.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/dao/impl/UserDAOImpl.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/filter/LoginFilter.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/BaseServlet.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/CartServlet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/CollectServlet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/IndexServlet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/OrderServlet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/ProductServlet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/servlet/UserServlet.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/util/AliyunCodeUtil.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/com/aaa/util/PageUtil.java" charset="GBK" />
+  </component>
+</project>

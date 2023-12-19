@@ -1,0 +1,181 @@
+<!DOCTYPE HTML >
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品详情</title>
+<link rel="stylesheet" type="text/css" href="css/product.css" />
+<link type="text/css" rel="stylesheet" href="bs/css/bootstrap.min.css" />
+<link href="css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<!-- 头部导航 -->
+	<embed style="width: 100%;" type="text/html" src="header.html" />
+
+	<div class="banner_x center" style="margin-top: -120px">
+		<a href="index.html" target="_blank">
+			<div class="logo fl"></div>
+		</a> <a href="">
+			<div class="ad_top fl"></div>
+		</a>
+		<div class="nav fl">
+			<ul>
+				<li><a href="">小米手机</a></li>
+				<li><a href="">红米</a></li>
+				<li><a href="">平板·笔记本</a></li>
+				<li><a href="">电视</a></li>
+				<li><a href="">盒子·影音</a></li>
+				<li><a href="">路由器</a></li>
+				<li><a href="">智能硬件</a></li>
+				<li><a href="">服务</a></li>
+				<li><a href="">社区</a></li>
+			</ul>
+		</div>
+		<div class="search fr">
+			<form action="" method="post">
+				<div class="text fl">
+					<input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货" />
+				</div>
+				<div class="submit fl">
+					<input type="submit" class="sousuo" value="搜索" />
+				</div>
+				<div class="clear"></div>
+			</form>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div id="app">
+	<div v-if="code == 500"
+			style="margin-left: -50px; text-align: center">
+			<div>
+				<img src="img/xiaomi.jpg" style="width: 500px; height: 463px"><br />
+				<h2>
+					对不起 还没有该商品 请返回<a href="index.html" style="font-family: 楷体">前台</a>
+				</h2>
+			</div>
+		</div>
+		<!-- <div v-if="info==null">对不起 暂无该商品</div>
+			<div v-else> -->
+		<div class="wrap" v-else>
+			<img :src="info.pimage" style="position: relative; left: -50px" />
+			<div class="description">
+				<h2>{{info.pname}}</h2>
+				<div class="old_price">
+					原价： <span> ￥{{info.shopPrice*1.25}} </span>
+				</div>
+				<div class="price">
+					折扣价: <span> ￥{{info.shopPrice}} </span>
+				</div>
+				<div>配置:官方标配</div>
+				
+				<div class="count">
+					数量： <span class="s" @click="jian()">－</span> <input type="text" v-model="info.num"
+						 name="num" class="num"disabled="disabled" /> <span class="s" @click="add()">＋</span>
+				</div>
+				<div>
+					<button @click="collect" class="buy">收藏</button>
+				</div>
+				<div>
+					<button @click="addCart" class="buy">加入购物车</button>
+					<a  @click="goShopPrice()"
+						class="btn btn-info"
+						style="background-color: darkslateblue; height: 40px; width: 200px; color: white; border: 0;">立即购买</a>
+
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+			el : "#app",
+			data : {
+				info : [],
+				foo : [],
+				code:0
+			},
+			methods : {
+				jian:function(){
+					app.info.num--;
+					if(app.info.num<1){
+						app.info.num=1;
+					}
+				},
+				add:function(){
+					app.info.num++;
+					
+				},
+				goShopPrice:function(){
+					/* 去付款 */
+					$.get("user?m=getUser",function(back){
+						if(back.data!=null){
+							window.location.href="order.html?pid="+app.info.pid+"&num="+app.info.num+"";
+						}else{
+							if (confirm("请先登录")) {
+								window.location.href = "login.html";
+							}
+						}
+						
+					});
+					
+				},
+				collect : function() {
+					/* 收藏 */
+					$.post("foo/collect?m=collect&pid=" + app.info.pid,
+							function(back) {
+								if (back.code == 20017) {
+									if (confirm("添加成功 是否查看")) {
+										window.location.href = "collect.html";
+									}
+								} else if(back.code==20021){
+									alert("请勿重复添加");
+								}else {
+									if (confirm("请先登录")) {
+										window.location.href = "login.html";
+									}
+								}
+								
+							});
+				},
+				addCart : function() {
+					/* 添加购物车 */
+					$.post("foo/cart?m=addCart", app.info, function(back) {
+						//根据获取的code判断是否登录
+						if (back.code == 20011) {
+							if (confirm("请先登录")) {
+								window.location.href = "login.html";
+							}
+						}
+						if (back.code == 20012) {
+							if (confirm("添加成功 是否去购物车查看")) {
+								window.location.href = "goodscart.html";
+							}
+						}
+						if (back.code == 20030) {
+							if (confirm("数量加1")) {
+								window.location.href = "goodscart.html";
+							}
+						}
+
+					});
+
+				}
+			}
+		});
+		var id = window.location.href.split("=")[1];
+		/* 根据id获取商品信息 */
+		$.get("pro?m=getProduct&id=" + id, function(back) {
+            if(back.data==null){
+            	app.code=500;
+            }else{
+            	app.info = back.data;
+    			app.info.num = 1;
+            }
+			
+		});
+	</script>
+</body>
+<script type="text/javascript" src="js/product.js"></script>
+</html>

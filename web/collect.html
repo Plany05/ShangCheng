@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="bs/css/bootstrap.min.css" />
+</head>
+<embed style="width: 100%;" type="text/html" src="header.html" />
+<body>
+	<div id="app" style="margin-top: -120px;">
+		<div v-if="code == 20011"
+			style="margin-left: -50px; text-align: center">
+			<div>
+				<img src="img/xiaomi.jpg" style="width: 500px; height: 463px"><br />
+				<h2>
+					对不起 您还没有登录 请先<a href="login.html" style="font-family: 楷体">登录</a>
+				</h2>
+			</div>
+		</div>
+		<div v-else>
+		<div class="banner_x center">
+			<div class="logo fl"></div>
+			<div class="ad_top fl"></div>
+		</div>
+		<div class="danpin center">
+			<div class="biaoti center "
+				style=" color: red;" >我的收藏</div>
+			<div class="main center">
+				<div class="mingxing fl mb20" v-for="p in info"
+					style="margin: 0px 10px 20px 0px">
+					<div class="sub_mingxing">
+						<a :href="'product.html?id='+p.pid"><img :src="p.pimage"></a>
+					</div>
+					<div class="pinpai">
+						<a href="index.html">{{p.pname}}</a>
+					</div>
+					<div class="jiage">{{p.shopPrice}}</div>
+					<div class="youhui">{{p.pdesc}}</div>
+					<button @click="deleteCollect(p.pid)" class="btn btn-danger"
+						style="float: right">删除</button>
+				</div>
+			</div>
+		</div>
+		</div>			
+	</div>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+			el : "#app",
+			data : {
+				info : [],
+				code:0
+			},
+			methods : {
+				/* 删除收藏 */
+				deleteCollect : function(id) {
+					/* 发送需要删除商品的id */
+					$.get("foo/collect?m=deleteCollect&pid=" + id, function(back) {
+						if (back.code == 20019) {
+							if (confirm("删除成功 是否主页")) {
+								window.location.href="menu.html";
+							}
+						} else {
+							alert("删除失败");
+						}
+					});
+				}
+			}
+		});
+		/* 获取用户全部的收藏信息  */
+		$.post("foo/collect?m=getCollect", function(back) {
+			app.info = back.data;
+			app.code = back.code;
+		});
+	</script>
+</body>
+</html>

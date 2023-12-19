@@ -1,0 +1,92 @@
+
+<!--头部-->
+
+<link rel="stylesheet" type="text/css" href="./css/style.css">
+
+<div class="header_wrap" id="head">
+	<header>
+
+		<div class="top center">
+			<div class="left fl">
+				<ul>
+					<li><a href="http://www.mi.com/" target="parent">小米商城</a></li>
+					<li>|</li>
+					<li><a href="">MIUI</a></li>
+					<li>|</li>
+					<li><a href="">米聊</a></li>
+					<li>|</li>
+					<li><a href="">游戏</a></li>
+					<li>|</li>
+					<li><a href="">多看阅读</a></li>
+					<li>|</li>
+					<li><a href="">云服务</a></li>
+					<li>|</li>
+					<li><a href="">金融</a></li>
+					<li>|</li>
+					<li><a href="">小米商城移动版</a></li>
+					<li>|</li>
+					<li><a href="">问题反馈</a></li>
+					<li>|</li>
+					<li><a href="">Select Region</a></li>
+					<div class="clear"></div>
+				</ul>
+			</div>
+			<div class="right fr">
+				<div class="gouwuche fr">
+					<a href="goodscart.html" target="_parent">购物车</a>
+				</div>
+
+				<div class="fr">
+					<ul>
+						<span v-if="info!=null">
+							<li>欢迎</li>
+							<li><a href="personal.html" target="parent">{{info.nickname}}</a></li>
+							<li><a href = "login.html" @click="logout" target="_parent">注销</a></li>
+						</span>
+						<span v-else>
+							<li><a href="login.html" target="_parent">登录</a></li>
+							<li>|</li>
+							<li><a href="register.html" target="_parent">注册</a></li>
+						</span>
+						<li>|</li>
+						<li><a href="collect.html" target="_parent">我的收藏</a></li>
+						<li><a href="menu.html" target="_parent">全部商品</a></li>
+						<li><a href="index.html" target="_parent">首页</a></li>
+						<li><a href="/shophoutai/index.html" target="_parent">商家后台</a></li>
+						
+					</ul>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</header>
+</div>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/jq.js"></script>
+<script type="text/javascript">
+	var head = new Vue({
+		el : "#head",
+		data : {
+			info : null
+		},
+		methods : {
+			/* 注销 */
+			logout : function() {
+				if (confirm("是否确定注销")) {
+					$.get("user?m=logout", function(back) {
+						if (back.code == 30033) {
+							document.location.href = "login.html";
+						}
+					});
+				}
+			}
+		}
+	});
+	/* 获取用户信息  */
+	$.get("user?m=getUser", function(back) {
+		head.info = back.data;
+	});
+</script>
+
+

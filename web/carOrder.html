@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link type="text/css" rel="stylesheet"
+	href="js/bootstrap-3.3.7-dist/css/bootstrap.css" />
+<script src="js/jq.js"></script>
+<script src="js/vue.js"></script>
+
+<script src="js/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+label {
+	text-align: center;
+}
+
+#submit {
+	margin-left: 150px;
+}
+</style>
+</head>
+<body>
+	<embed style="width: 100%;" type="text/html" src="header.html" />
+	<div class="banner_x center" style="margin-top: -120px">
+		<a href="index.html" target="_blank">
+			<div class="logo fl"></div>
+		</a> <a href="">
+			<div class="ad_top fl"></div>
+		</a>
+		<div class="nav fl">
+			<ul>
+				<li><a href="">小米手机</a></li>
+				<li><a href="">红米</a></li>
+				<li><a href="">平板·笔记本</a></li>
+				<li><a href="">电视</a></li>
+				<li><a href="">盒子·影音</a></li>
+				<li><a href="">路由器</a></li>
+				<li><a href="">智能硬件</a></li>
+				<li><a href="">服务</a></li>
+				<li><a href="">社区</a></li>
+			</ul>
+		</div>
+		<div class="search fr">
+			<form action="" method="post">
+				<div class="text fl">
+					<input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货" />
+				</div>
+				<div class="submit fl">
+					<input type="submit" class="sousuo" value="搜索" />
+				</div>
+				<div class="clear"></div>
+			</form>
+			<div class="clear"></div>
+		</div>
+	</div>
+
+	<div class="head"></div>
+	<div class="container" id="ppp">
+		<div class="col-xs-8" style="margin-bottom: 50px">
+
+			<table
+				class="table table-bordered table-condensed table-hover table-striped">
+				<thead>
+					<tr>
+						<th>商品图片</th>
+						<th>商品名称</th>
+						<th>价格</th>
+						<th>数量</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for=" p in info">
+						<td><img :src="p.pimage" style="width: 40px; height: 40px;" /></td>
+						<td>{{p.pname}}</td>
+						<td>{{p.price}}</td>
+						<th>{{p.num}}</th>
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+		<div class="col-xs-4"
+			style="text-align: center; border: solid 1px red; margin-bottom: 50px"
+			id="app">
+
+			<div class="form-group">
+				<label for="name">收货人姓名:</label> <input type="text"
+					class="form-control" id="name" placeholder="收货人姓名"
+					v-model="foo.consigneeName">
+			</div>
+
+			<div class="form-group">
+				<label for="phone">收货人联系电话</label> <input type="text"
+					class="form-control" id="phone" placeholder="收货人联系电话"
+					v-model="foo.phone">
+			</div>
+
+			<div data-toggle="distpicker">
+				<div class="form-group">
+					<label>收货地址</label>
+					<div class="row">
+						<div class="col-xs-4">
+							<select class="form-control" id="province2" data-province="-选择省-"
+								v-model="foo.province">
+
+							</select>
+						</div>
+						<div class="col-xs-4">
+							<select class="form-control" id="city2" data-city="-选择市-"
+								v-model="foo.city">
+
+							</select>
+						</div>
+						<div class="col-xs-4">
+							<select class="form-control" id="district2" data-district="-选择区-"
+								v-model="foo.county">
+							</select>
+						</div>
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label for="address">收货详细地址</label> <input type="text"
+						class="form-control" id="address" placeholder="门店详细地址"
+						v-model="foo.site" />
+				</div>
+				<span><button class="btn btn-success" @click="money">确定付款</button></span>
+			</div>
+		</div>
+
+	</div>
+
+	<script src="js/jilian/distpicker.data.js"></script>
+	<script src="js/jilian/distpicker.js"></script>
+	<script src="js/jilian/main.js"></script>
+
+
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript">
+		$.get("foo/cart ?m=getUserCart", function(back) {
+
+			ppp.info = back.data.trade;
+			ppp.aggregate = back.data.aggregate;
+		});
+		var ppp = new Vue({
+			el : "#ppp",
+			data : {
+				info : [],
+				foo : {},
+				aggregate : 0
+			},
+			methods : {
+				/* 确定付款  */
+				money : function() {
+					/* 判断是否付款成功 */
+					if (orderTrue()) {
+						/* 发送购物车全部付款清空购物车的请求  */
+						$.post("order?m=getMoney", ppp.foo, function(back) {
+							if (back.code = 20027) {
+								if (confirm("购买成功 是否查看订单")) {
+									window.location.href = "myorder.html";
+								}
+							}
+						});
+					}
+				}
+			}
+		});
+		/*  非空矫正  */
+		function orderTrue() {
+			/*	名字的非空验证   */
+			var name = document.getElementById("name");
+			if (name.value == '') {
+				alert('姓名不能为空');
+				name.focus();
+				return false;
+			}
+			/* 手机号非空 */
+			var phone = document.getElementById("phone");
+			if (phone.value == '') {
+				alert('电话不能为空');
+				phone.focus();
+				return false;
+			} else {
+				var phone_reg = /^13[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}|17[0-9]{1}[0-9]{8}$|14[0-9]{1}[0-9]{8}/;
+				var tel_reg = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+				if (!phone_reg.test(phone.value) && !tel_reg.test(phone.value)) {
+					alert('手机或电话号码格式不正确。如果是固定电话，必须形如(xxxx-xxxxxxxx)');
+					return false;
+				}
+			}
+			/*  省份非空   */
+			var province2 = document.getElementById("province2");
+			if (province2.value == '') {
+				alert('省份不能为空');
+				province2.focus();
+				return false;
+			}
+			/*  市区非空判断   */
+			var city2 = document.getElementById("city2");
+			if (city2.value == '') {
+				alert('所在市不能为空');
+				city2.focus();
+				return false;
+			}
+			/*  详细地址非空判断   */
+			var address = document.getElementById("address");
+			if (address.value == '') {
+				alert('详细地址不能为空');
+				address.focus();
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+</body>
+</html>

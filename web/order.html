@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<link type="text/css" rel="stylesheet" href="bs/css/bootstrap.min.css" />
+<script src="js/jq.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/bootstrap.js"></script>
+
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+label {
+	text-align: center;
+}
+
+#submit {
+	margin-left: 150px;
+}
+</style>
+</head>
+<embed style="width: 100%;" type="text/html" src="header.html" />
+
+
+
+<body>
+
+<div class="banner_x center" style="margin-top: -120px">
+	<a href="index.html" target="_blank">
+		<div class="logo fl"></div>
+	</a> <a href="">
+		<div class="ad_top fl"></div>
+	</a>
+	<div class="nav fl">
+		<ul>
+			<li><a href="">小米手机</a></li>
+			<li><a href="">红米</a></li>
+			<li><a href="">平板·笔记本</a></li>
+			<li><a href="">电视</a></li>
+			<li><a href="">盒子·影音</a></li>
+			<li><a href="">路由器</a></li>
+			<li><a href="">智能硬件</a></li>
+			<li><a href="">服务</a></li>
+			<li><a href="">社区</a></li>
+		</ul>
+	</div>
+	<div class="search fr">
+		<form action="" method="post">
+			<div class="text fl">
+				<input type="text" class="shuru" placeholder="小米6&nbsp;小米MIX现货" />
+			</div>
+			<div class="submit fl">
+				<input type="submit" class="sousuo" value="搜索" />
+			</div>
+			<div class="clear"></div>
+		</form>
+		<div class="clear"></div>
+	</div>
+</div>
+
+	<div id="app" style="margin-top:200px">
+		<div v-if="code == 20011"
+			style="margin-left: -50px; text-align: center">
+			<div>
+				<img src="img/xiaomi.jpg" style="width: 500px; height: 463px"><br />
+				<h2>
+					对不起 您还没有登录 请先<a href="login.html" style="font-family: 楷体">登录</a>
+				</h2>
+			</div>
+		</div>
+		<div class="container" v-else>
+
+			<div class="col-xs-6"style="margin-top:100px">
+				<table
+					class="table table-bordered table-condensed table-hover table-striped">
+					<thead>
+						<tr>
+							<th>商品图片</th>
+							<th>商品名称</th>
+							<th>价格</th>
+							<th>数量</th>
+							<th>小计</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><img :src="foo.pimage"
+								style="width: 40px; height: 40px;" /></td>
+							<td>{{foo.pname}}</td>
+							<td>{{foo.shopPrice}}</td>
+							<th>{{foo.num}}</th>
+							<th>{{foo.shopPrice*foo.num}}</th>
+						</tr>
+						<tr></tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-xs-4" style="text-align: center;">
+
+				<div class="form-group">
+					<label for="name">收货人姓名:</label> <input type="text"
+						class="form-control" id="name" placeholder="收货人姓名"
+						v-model="info.consigneeName">
+				</div>
+
+				<div class="form-group">
+					<label for="phone">收货人联系电话</label> <input type="text"
+						class="form-control" id="phone" placeholder="收货人联系电话"
+						v-model="info.phone">
+				</div>
+
+				<div data-toggle="distpicker">
+					<div class="form-group">
+						<label>收货地址</label>
+						<div class="row">
+							<div class="col-xs-4">
+								<select class="form-control" id="province2"
+									data-province="-选择省-" v-model="info.province">
+
+								</select>
+							</div>
+							<div class="col-xs-4">
+								<select class="form-control" id="city2" data-city="-选择市-"
+									v-model="info.city">
+
+								</select>
+							</div>
+							<div class="col-xs-4">
+								<select class="form-control" id="district2"
+									data-district="-选择区-" v-model="info.county">
+
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="address">收货详细地址</label> <input type="text"
+						class="form-control" id="address" placeholder="门店详细地址"
+						v-model="info.site" />
+				</div>
+				<input type="button" id="submit" class="btn btn-primary" value="提交"
+					style="margin-left: 20px;" @click="alert" />
+
+			</div>
+			<div class="col-xs-2"></div>
+
+		</div>
+	</div>
+	<script src="js/distpicker.data.js"></script>
+	<script src="js/distpicker.js"></script>
+	<script src="js/main.js"></script>
+</body>
+<script type="text/javascript">
+	/* 判断是否登录 */
+	$.get("order?m=isExist", function(back) {
+		app.code = back.code;
+	});
+	var app = new Vue({
+		el : "#app",
+		data : {
+			code : 0,
+			info : {},
+			foo : {}
+		},
+		methods : {
+			alert : function() {
+				if (orderTrue()) {
+					/* 获取地址信息购买商品 */
+					$.post("order?m=addOrder", app.info, function(back) {
+						if (back.code = 20027) {
+							if (confirm("购买成功 是否去查看订单")) {
+								window.location.href = "myorder.html";
+							}
+						}
+					});
+				}
+			}
+		}
+	});
+
+	var pid = window.location.href.split("&")[0].split("=")[1];
+	var num = window.location.href.split("&")[1].split("=")[1];
+	app.info.pid = pid;
+	app.info.tradeNum = num;
+	/* 根据商品id获取商品信息 */
+	$.get("pro?m=getProduct&id=" + app.info.pid, function(back) {
+		app.foo = back.data;
+		app.foo.num = num;
+	});
+
+	/*  非空校验  */
+	function orderTrue() {
+		/*	名字的非空验证   */
+		var name = document.getElementById("name");
+		if (name.value == '') {
+			alert('姓名不能为空');
+			name.focus();
+			return false;
+		}
+		/* 手机号非空 */
+		var phone = document.getElementById("phone");
+		if (phone.value == '') {
+			alert('电话不能为空');
+			phone.focus();
+			return false;
+		} else {
+			var phone_reg = /^13[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}|17[0-9]{1}[0-9]{8}$|14[0-9]{1}[0-9]{8}/;
+			var tel_reg = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+			if (!phone_reg.test(phone.value) && !tel_reg.test(phone.value)) {
+				alert('手机或电话号码格式不正确。如果是固定电话，必须形如(xxxx-xxxxxxxx)');
+				return false;
+			}
+		}
+		/*  省份非空   */
+		var province2 = document.getElementById("province2");
+		if (province2.value == '') {
+			alert('省份不能为空');
+			province2.focus();
+			return false;
+		}
+		/*  市区非空判断   */
+		var city2 = document.getElementById("city2");
+		if (city2.value == '') {
+			alert('所在市不能为空');
+			city2.focus();
+			return false;
+		}
+		/*  详细地址非空判断   */
+		var address = document.getElementById("address");
+		if (address.value == '') {
+			alert('详细地址不能为空');
+			address.focus();
+			return false;
+		}
+		return true;
+	}
+</script>
+
+</html>

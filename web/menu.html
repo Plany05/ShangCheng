@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link type="text/css" rel="stylesheet" href="bs/css/bootstrap.min.css" />
+<style type="text/css">
+
+
+</style>
+</head>
+<embed style="width: 100%;" type="text/html" src="header.html" />
+
+<body >
+	<div id="app" style="text-align: center;position: relative;margin-top:-120px;" >
+
+
+		<div class="banner_x center" >
+			<div class="logo fl"></div>
+			<div class="ad_top fl"></div>
+			<div class="nav fl">
+				<ul>
+					<li><a @click="jacket(1)">手机</a></li>
+					<li><a @click="jacket(2)">电视</a></li>
+					<li><a @click="jacket(3)">笔记本</a></li>
+					<li><a @click="jacket(4)">路由器</a></li>
+					<li><a @click="jacket(5)">家电</a></li>
+					<li><a @click="jacket(7)">出行</a></li>
+					<li><a @click="jacket(8)">电源/配件</a></li>
+					<li><a @click="jacket(9)">箱包服饰</a></li>
+				</ul>
+			</div>
+
+
+			<div class="search fr">
+
+				<div class = "sousuo">
+					<input type="text" v-model="search.name" placeholder="小米6 MIX现货"
+					 class="btn"style="border:solid 1px  "/>
+						<button @click="foo" class="btn">搜索</button>
+				</div>
+				</div>
+				<div class="submit fl">
+				
+
+			</div>
+		</div>
+
+		<div class="danpin center">
+			<div class="biaoti center">小米手机</div>
+			<div class="main center">
+				<div class="mingxing fl mb20" v-for="p in info"
+					style="margin: 0px 10px 20px 0px;">
+					<div class="sub_mingxing">
+						<a :href="'product.html?id='+p.pid"><img :src="p.pimage"
+							style="height: 280px; width: 200px; position: relative; left: -20px; top: -20px;"></a>
+					</div>
+					<div class="pinpai"
+						style="position: relative; left: -20px; top: -25px;">
+						<div><a href="index.html">{{p.pname}}</a></div>
+						<div>
+						<a><img src="products/sc2.png" style= "margin-top:-8px;">{{p.collect}} </a>&nbsp
+						<a>销量：{{p.quantity}}</a>
+						</div>
+					</div>
+
+				</div>
+
+				
+			<div style="position:absolute;bottom:-1200px;left:25%">
+					<button @click="changePage(1) " class="btn">首页</button>
+					<button @click="changePage(page.shangyiye)" class="btn">上一页</button>
+					<button @click="changePage(page.xiayiye)" class="btn">下一页</button>
+					<button @click="changePage(page.weiye)" class="btn">尾页</button>
+					每页显示 {{page.count}} 条 共 {{page.gong}}条 当前是第 {{page.currentPage}}/
+					{{page.weiye}}页 <span style="width: 10px">跳转到第<input
+						v-model="bar.page" />页
+					</span>
+					<button @click="send(bar.page,page.weiye)" class="btn">跳转</button>
+
+
+				</div>
+			</div>
+			
+		
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+			el : "#app",
+			data : {
+				info : [],//信息
+				page : {},//页面
+				bar : {},//跳转
+				search : {}//搜索
+			},
+			methods : {
+				/* 分页 */
+				changePage : function(page) {
+					LoginPage(page);
+				},
+				//搜索
+				foo : function() {
+
+					LoginPage(1);
+				},
+				//跳转
+				send : function(page, weiye) {
+					if (page > 0 && page < weiye) {
+						LoginPage(page);
+					} else {
+						alert("输入页数超出范围");
+
+					}
+
+				},
+				/* 分类 */
+				jacket : function(a) {
+					$.get("pro?m=jacket&cid=" + a, function(back) {
+						app.info = back.data;
+					});
+				}
+			}
+		});
+		/* 默认第一页 */
+		LoginPage(1);
+		function LoginPage(newPage) {
+			$.post("pro?m=home&page=" + newPage, app.search, function(back) {
+				if (back.code == 20001) {
+					app.info = back.data.productArr;
+					app.page = back.data.pageInfo;
+				}
+
+			});
+		}
+	</script>
+</body>
+</html>
